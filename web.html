@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DOWNLOAD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:#050008;
+  color:#fff;
+  font-family:'Orbitron',sans-serif;
+  overflow:hidden;
+  cursor:none;
+}
+
+/* INTRO */
+#intro{
+  position:fixed;
+  inset:0;
+  background:#050008;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.8rem;
+  letter-spacing:3px;
+  color:#a855f7;
+  z-index:10;
+  animation:intro 3s forwards;
+}
+@keyframes intro{
+  0%,70%{opacity:1}
+  100%{opacity:0;pointer-events:none}
+}
+
+/* MATRIX */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
+
+/* CENTER */
+.center{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+/* TITLE */
+.title{
+  font-size:4.5rem;
+  font-weight:900;
+  letter-spacing:8px;
+  color:#c084fc;
+  text-shadow:0 0 40px rgba(192,132,252,.6);
+  animation:fadeUp 1.5s ease forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* SUBTEXT */
+#status{
+  margin-top:25px;
+  font-size:1.1rem;
+  color:#aaa;
+  letter-spacing:2px;
+  min-height:22px;
+}
+
+/* BUTTON */
+button{
+  margin-top:70px;
+  padding:18px 70px;
+  background:transparent;
+  border:2px solid #a855f7;
+  color:#fff;
+  font-size:1.2rem;
+  letter-spacing:3px;
+  border-radius:40px;
+  transition:.4s;
+  box-shadow:0 0 25px rgba(168,85,247,.4);
+}
+
+button:hover{
+  background:#a855f7;
+  color:#050008;
+  box-shadow:0 0 60px #a855f7;
+  transform:scale(1.08);
+}
+
+/* LOADER */
+#loader{
+  width:320px;
+  height:8px;
+  border:1px solid #a855f7;
+  margin-top:35px;
+  display:none;
+}
+#bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#a855f7,#ec4899);
+}
+
+/* CURSOR */
+.cursor{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#a855f7;
+  position:fixed;
+  pointer-events:none;
+  box-shadow:0 0 20px #a855f7;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro">SYSTEM INITIALIZING</div>
+<canvas id="matrix"></canvas>
+<div class="cursor" id="cursor"></div>
+
+<div class="center">
+  <div class="title">DOWNLOAD</div>
+  <div id="status"></div>
+  <button onclick="start()">START</button>
+  <div id="loader"><div id="bar"></div></div>
+</div>
+
+<script>
+/* MATRIX */
+const c=document.getElementById("matrix"),ctx=c.getContext("2d");
+c.width=innerWidth;c.height=innerHeight;
+const letters="01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const font=14,cols=c.width/font;
+const drops=Array(Math.floor(cols)).fill(1);
+
+setInterval(()=>{
+  ctx.fillStyle="rgba(0,0,0,0.06)";
+  ctx.fillRect(0,0,c.width,c.height);
+  ctx.fillStyle="#7c3aed";
+  ctx.font=font+"px monospace";
+  drops.forEach((y,i)=>{
+    const t=letters[Math.random()*letters.length|0];
+    ctx.fillText(t,i*font,y*font);
+    drops[i]=y*font>c.height&&Math.random()>0.985?0:y+1;
+  });
+},40);
+
+/* STATUS TEXT */
+const texts=[
+  "SECURE CHANNEL ESTABLISHED",
+  "VERIFYING ACCESS",
+  "READY TO PROCEED"
+];
+let s=0;
+setInterval(()=>{
+  document.getElementById("status").innerText=texts[s%texts.length];
+  s++;
+},1600);
+
+/* START */
+function start(){
+  document.getElementById("loader").style.display="block";
+  let p=0;
+  const bar=document.getElementById("bar");
+  const int=setInterval(()=>{
+    p+=1.5;
+    bar.style.width=p+"%";
+    if(p>=100){
+      clearInterval(int);
+      document.querySelector(".title").innerText="ACCESS GRANTED";
+      document.getElementById("status").innerText="DOWNLOAD READY";
+      window.location.href = "https://your-link-here.com";
+    }
+  },40);
+}
+
+/* CURSOR */
+const cur=document.getElementById("cursor");
+addEventListener("mousemove",e=>{
+  cur.style.left=e.clientX+"px";
+  cur.style.top=e.clientY+"px";
+});
+</script>
+
+</body>
+</html>
